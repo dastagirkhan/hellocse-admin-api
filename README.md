@@ -128,7 +128,6 @@ php artisan test
 
 #### ProfileController
 - `index()`: Fetches all active profiles.
-- `publicIndex()`: Displays a public profile list.
 - `store(ProfileRequest $request)`: Stores a new profile with an image upload and default status.
 - `update(ProfileRequest $request, Profile $profile)`: Updates an existing profile and handles image replacement.
 - `destroy(Profile $profile)`: Deletes a profile and its associated image.

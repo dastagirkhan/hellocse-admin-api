@@ -16,12 +16,6 @@ class ProfileController extends Controller
         return Profile::where('statut', 'actif')->get(['id', 'nom', 'prenom', 'image']);
     }
 
-    public function publicIndex()
-    {
-        $profiles = Profile::where('statut', 'actif')->get();
-        return view('profiles.index', compact('profiles'));
-    }
-
 
     public function store(ProfileRequest $request)
     {
