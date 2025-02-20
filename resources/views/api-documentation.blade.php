@@ -62,19 +62,16 @@
             <input id="updateId" type="text" placeholder="Profile ID" class="border p-2 w-full mt-2">
             <input id="updateName" type="text" placeholder="First Name" class="border p-2 w-full mt-2">
             <input id="updateSurname" type="text" placeholder="Last Name" class="border p-2 w-full mt-2">
-
-            <label for="updateStatut" class="mt-2 block">Status</label>
+             <label for="updateStatut" class="mt-2 block">Status</label>
             <select id="updateStatut" class="border p-2 w-full mt-2">
                 <option value="actif">Actif</option>
                 <option value="inactif">Inactif</option>
                 <option value="en attente">En Attente</option>
             </select>
-
-            <button onclick="updateProfile()" class="bg-blue-500 text-white px-4 py-2 mt-2">Update</button>
+            <button onclick="updateProfile()" class="bg-yellow-500 text-white px-4 py-2 mt-2">Update</button>
             <p id="updateProfileResponse" class="text-sm text-gray-600 mt-2"></p>
             <div class="spinner" id="spinnerUpdate"></div>
         </div>
-
 
         <!-- Delete Profile Form -->
         <div class="mb-6">
@@ -164,27 +161,27 @@
     }
 
     async function updateProfile() {
-    const id = document.getElementById('updateId').value;
-    const name = document.getElementById('updateName').value;
-    const surname = document.getElementById('updateSurname').value;
-    const statut = document.getElementById('updateStatut').value; // Get statut value
+        const id = document.getElementById('updateId').value;
+        const name = document.getElementById('updateName').value;
+        const surname = document.getElementById('updateSurname').value;
+        const statut = document.getElementById('updateStatut').value; // Get statut value
 
-    showSpinner('spinnerUpdate'); // Show spinner
-    const response = await fetch(`/api/profiles/${id}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token,
-            'X-CSRF-TOKEN': csrfToken // Add CSRF token here
-        },
-        body: JSON.stringify({ nom: name, prenom: surname, statut: statut }) // Include statut
-    });
-    hideSpinner('spinnerUpdate'); // Hide spinner
 
-    const data = await response.json();
-    document.getElementById('updateProfileResponse').innerText = JSON.stringify(data);
-}
+        showSpinner('spinnerUpdate'); // Show spinner
+        const response = await fetch(`/api/profiles/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'X-CSRF-TOKEN': csrfToken // Add CSRF token here
+            },
+            body: JSON.stringify({ nom: name, prenom: surname, statut: statut }) // Include statut
+        });
+        hideSpinner('spinnerUpdate'); // Hide spinner
 
+        const data = await response.json();
+        document.getElementById('updateProfileResponse').innerText = JSON.stringify(data);
+    }
 
     async function deleteProfile() {
         const id = document.getElementById('deleteId').value;
@@ -197,10 +194,8 @@
                 'X-CSRF-TOKEN': csrfToken // Add CSRF token here
             }
         });
-        hideSpinner('spinnerDelete'); // Hide spinner
-
-        const data = await response.json();
-        document.getElementById('deleteProfileResponse').innerText = JSON.stringify(data);
+        hideSpinner('spinnerDelete'); // Hide spinner        
+        document.getElementById('deleteProfileResponse').innerText = "Deleted profile with ID: " + id;
     }
 </script>
 

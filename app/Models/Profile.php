@@ -16,6 +16,12 @@ class Profile extends Model
         'statut',
     ];
 
+    // Accessor for image attribute
+    public function getImageAttribute($value)
+    {
+        return '/storage/' . $value;
+    }
+
     // If a profile belongs to an administrator
     public function administrator()
     {
