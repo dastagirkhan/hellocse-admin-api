@@ -40,10 +40,20 @@
             <h2 class="text-xl font-semibold">Admin Login</h2>
             <input id="email" type="email" placeholder="Email" class="border p-2 w-full mt-2">
             <input id="password" type="password" placeholder="Password" class="border p-2 w-full mt-2">
-            <button onclick="login()" class="bg-blue-500 text-white px-4 py-2 mt-2">Login</button>
+            <button onclick="adminLogin()" class="bg-blue-500 text-white px-4 py-2 mt-2">Login</button>
             <p id="loginResponse" class="text-sm text-gray-600 mt-2"></p>
             <div class="spinner" id="spinnerLogin"></div>
         </div>
+        
+        {{-- <!-- Register Form -->
+        <div class="mb-6">
+            <h2 class="text-xl font-semibold">Admin Register</h2>
+            <input id="register_email" type="email" placeholder="Email" class="border p-2 w-full mt-2">
+            <input id="register_password" type="password" placeholder="Password" class="border p-2 w-full mt-2">
+            <button onclick="adminRegister()" class="bg-blue-500 text-white px-4 py-2 mt-2">Register</button>
+            <p id="registerResponse" class="text-sm text-gray-600 mt-2"></p>
+            <div class="spinner" id="spinnerRegister"></div>
+        </div> --}}
 
         <!-- Create Profile Form -->
         <div class="mb-6">
@@ -96,13 +106,13 @@
     function hideSpinner(spinnerId) {
         document.getElementById(spinnerId).style.display = 'none';
     }
-
-    async function login() {
+    
+    async function adminLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
         showSpinner('spinnerLogin'); // Show spinner
-        const response = await fetch('/api/login', {
+        const response = await fetch('/api/administrator/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,6 +130,24 @@
             document.getElementById('loginResponse').innerText = 'Login failed!';
         }
     }
+
+    // async function adminRegister() {
+    //     const email = document.getElementById('register_email').value;
+    //     const password = document.getElementById('register_password').value;
+        
+    //     showSpinner('spinnerRegister'); // Show spinner
+    //     const response = await fetch('/api/administrator/register', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRF-TOKEN': csrfToken // Add CSRF token here
+    //         },
+    //         body: JSON.stringify({ email, password })
+    //     });
+    //     hideSpinner('spinnerRegister'); // Hide spinner        
+    //     const data = await response.json();        
+    //     data.message && document.getElementById('registerResponse').innerText = data.message;
+    // }
 
     async function createProfile() {
         const name = document.getElementById('name').value;

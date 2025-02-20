@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdministratorController;
 use App\Http\Controllers\ProfileController;
 
-// Authentication routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Administrator routes
+Route::post('/administrator/register', [AdministratorController::class, 'register']);
+Route::post('/administrator/login', [AdministratorController::class, 'login']);
 
 // Profile routes
 Route::middleware('auth:sanctum')->group(function () {

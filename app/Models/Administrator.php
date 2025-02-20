@@ -14,4 +14,8 @@ class Administrator extends Authenticatable
     protected $fillable = ['email', 'password'];
 
     protected $hidden = ['password'];
+
+    protected $casts = [
+        'password' => 'hashed', // Laravel will automatically hash passwords
+    ];
 }

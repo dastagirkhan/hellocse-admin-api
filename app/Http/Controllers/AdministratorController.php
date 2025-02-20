@@ -8,7 +8,7 @@ use App\Http\Requests\Administrator\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 
-class AuthController extends Controller
+class AdministratorController extends Controller
 {
     /**
      * Handles admin registration.
@@ -18,10 +18,7 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $admin = Administrator::create([
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        $admin = Administrator::create($request->validated());
 
         return response()->json([
             'message' => 'Administrator registered successfully',
