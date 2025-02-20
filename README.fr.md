@@ -6,7 +6,7 @@ Ce projet est une API Laravel 11 qui gère les administrateurs et les profils. I
 
 1. **Cloner le dépôt**
    ```sh
-   git clone https://github.com/your-repo/hellocse-admin-api.git
+   git clone https://github.com/dastagirkhan/hellocse-admin-api
    cd hellocse-admin-api
    ```
 
