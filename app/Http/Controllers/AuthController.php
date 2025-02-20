@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Administrator;
-use App\Http\Requests\AuthRequest;
-use App\Http\Requests\LoginRequest;
-
+use App\Http\Requests\Administrator\RegisterRequest;
+use App\Http\Requests\Administrator\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 
@@ -14,10 +13,10 @@ class AuthController extends Controller
     /**
      * Handles admin registration.
      *
-     * @param AuthRequest $request
+     * @param RegisterRequest $request
      * @return JsonResponse
      */
-    public function register(AuthRequest $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         $admin = Administrator::create([
             'email' => $request->email,
