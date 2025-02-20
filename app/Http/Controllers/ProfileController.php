@@ -17,8 +17,9 @@ class ProfileController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Profile::where('statut', 'actif')->get(['id', 'nom', 'prenom', 'image']));
+        return response()->json(Profile::active()->get(['id', 'nom', 'prenom', 'image']));
     }
+
 
     /**
      * Store a new profile.
