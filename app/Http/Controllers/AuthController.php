@@ -33,12 +33,14 @@ class AuthController extends Controller
 
         $admin = Administrator::where('email', $request->email)->first();
 
+        // dd($admin->count());
+
         if ($admin && Hash::check($request->password, $admin->password)) {
             $token = $admin->createToken('API Token')->plainTextToken;
 
             return response()->json(['token' => $token], 200);
         }
-
+        // dd("hello");
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 }

@@ -42,10 +42,12 @@ class ProfileController extends Controller
 
         $profile->nom = $request->nom;
         $profile->prenom = $request->prenom;
+        $profile->statut = $request->statut;
         $profile->save();
 
         return response()->json($profile);
     }
+
 
     public function destroy(Profile $profile)
     {

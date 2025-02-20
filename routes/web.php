@@ -11,3 +11,7 @@ Route::get('/api/documentation', function () {
 });
 
 Route::view('/profiles', 'profiles.index')->name('profiles.index');
+
+Route::get('/api-documentation', function () {
+    return view('api-documentation');
+});
