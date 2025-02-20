@@ -3,68 +3,55 @@
 namespace App\Http\Controllers;
 
 use App\Models\Administrator;
-use Illuminate\Http\Request;
+use App\Http\Requests\AuthRequest;
+use App\Http\Requests\LoginRequest;
+
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
     /**
      * Handles admin registration.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param AuthRequest $request
+     * @return JsonResponse
      */
-    public function register(Request $request)
+    public function register(AuthRequest $request): JsonResponse
     {
-        // Validate request data
-        $request->validate([
-            'email' => 'required|email|unique:administrators',
-            'password' => 'required|min:8',
-        ]);
-
-        // Create new administrator
         $admin = Administrator::create([
             'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash the password before storing
+            'password' => Hash::make($request->password),
         ]);
 
-        // Return response with created administrator data
-        return response()->json($admin, 201);
+        return response()->json([
+            'message' => 'Administrator registered successfully',
+            'data' => $admin,
+        ], 201);
     }
+
 
     /**
      * Handles admin login and token generation.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param LoginRequest $request
+     * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request): JsonResponse
     {
-        // Validate request data
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        // Retrieve administrator by email
         $admin = Administrator::where('email', $request->email)->first();
 
-        // Debugging statement (commented out)
-        // dd($admin->count());
-
-        // Check if admin exists and password is correct
         if ($admin && Hash::check($request->password, $admin->password)) {
-            // Generate API token
             $token = $admin->createToken('API Token')->plainTextToken;
 
-            // Return token in response
-            return response()->json(['token' => $token], 200);
+            return response()->json([
+                'message' => 'Login successful',
+                'token' => $token,
+            ], 200);
         }
 
-        // Debugging statement (commented out)
-        // dd("hello");
-
-        // Return error response for invalid credentials
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return response()->json([
+            'message' => 'Invalid credentials',
+        ], 401);
     }
 }
