@@ -33,6 +33,7 @@
             <button onclick="viewProfiles()" class="bg-blue-500 text-white px-4 py-2 mt-2">Fetch Profiles</button>
             <div id="profilesContainer" class="mt-4"></div>
             <div class="spinner" id="spinnerView"></div>
+            <p id="viewProfilesResponse" class="text-sm text-red-600 mt-2"></p>
         </div>
         
         <!-- Login Form -->
@@ -41,20 +42,10 @@
             <input id="email" type="email" placeholder="Email" class="border p-2 w-full mt-2">
             <input id="password" type="password" placeholder="Password" class="border p-2 w-full mt-2">
             <button onclick="adminLogin()" class="bg-blue-500 text-white px-4 py-2 mt-2">Login</button>
-            <p id="loginResponse" class="text-sm text-gray-600 mt-2"></p>
+            <p id="loginResponse" class="text-sm text-red-600 mt-2"></p>
             <div class="spinner" id="spinnerLogin"></div>
         </div>
         
-        {{-- <!-- Register Form -->
-        <div class="mb-6">
-            <h2 class="text-xl font-semibold">Admin Register</h2>
-            <input id="register_email" type="email" placeholder="Email" class="border p-2 w-full mt-2">
-            <input id="register_password" type="password" placeholder="Password" class="border p-2 w-full mt-2">
-            <button onclick="adminRegister()" class="bg-blue-500 text-white px-4 py-2 mt-2">Register</button>
-            <p id="registerResponse" class="text-sm text-gray-600 mt-2"></p>
-            <div class="spinner" id="spinnerRegister"></div>
-        </div> --}}
-
         <!-- Create Profile Form -->
         <div class="mb-6">
             <h2 class="text-xl font-semibold">Create Profile</h2>
@@ -62,7 +53,7 @@
             <input id="surname" type="text" placeholder="Last Name" class="border p-2 w-full mt-2">
             <input id="image" type="file" class="border p-2 w-full mt-2">
             <button onclick="createProfile()" class="bg-green-500 text-white px-4 py-2 mt-2">Create</button>
-            <p id="createProfileResponse" class="text-sm text-gray-600 mt-2"></p>
+            <p id="createProfileResponse" class="text-sm text-red-600 mt-2"></p>
             <div class="spinner" id="spinnerCreate"></div>
         </div>        
 
@@ -72,14 +63,15 @@
             <input id="updateId" type="text" placeholder="Profile ID" class="border p-2 w-full mt-2">
             <input id="updateName" type="text" placeholder="First Name" class="border p-2 w-full mt-2">
             <input id="updateSurname" type="text" placeholder="Last Name" class="border p-2 w-full mt-2">
-             <label for="updateStatut" class="mt-2 block">Status</label>
+            <label for="updateStatut" class="mt-2 block">Status</label>
             <select id="updateStatut" class="border p-2 w-full mt-2">
+                <option value="">Select Status</option>
                 <option value="actif">Actif</option>
                 <option value="inactif">Inactif</option>
                 <option value="en attente">En Attente</option>
             </select>
             <button onclick="updateProfile()" class="bg-yellow-500 text-white px-4 py-2 mt-2">Update</button>
-            <p id="updateProfileResponse" class="text-sm text-gray-600 mt-2"></p>
+            <p id="updateProfileResponse" class="text-sm text-red-600 mt-2"></p>
             <div class="spinner" id="spinnerUpdate"></div>
         </div>
 
@@ -88,7 +80,7 @@
             <h2 class="text-xl font-semibold">Delete Profile</h2>
             <input id="deleteId" type="text" placeholder="Profile ID" class="border p-2 w-full mt-2">
             <button onclick="deleteProfile()" class="bg-red-500 text-white px-4 py-2 mt-2">Delete</button>
-            <p id="deleteProfileResponse" class="text-sm text-gray-600 mt-2"></p>
+            <p id="deleteProfileResponse" class="text-sm text-red-600 mt-2"></p>
             <div class="spinner" id="spinnerDelete"></div>
         </div>
     </div>
@@ -107,10 +99,20 @@
         document.getElementById(spinnerId).style.display = 'none';
     }
     
+    function displayError(message, responseId) {
+        document.getElementById(responseId).innerText = message;
+    }
+
     async function adminLogin() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        
+
+        // Validate form fields
+        if (!email || !password) {
+            displayError('Please fill in both email and password fields.', 'loginResponse');
+            return;
+        }
+
         showSpinner('spinnerLogin'); // Show spinner
         const response = await fetch('/api/administrator/login', {
             method: 'POST',
@@ -125,34 +127,22 @@
         const data = await response.json();
         if (data.token) {
             token = data.token;
-            document.getElementById('loginResponse').innerText = 'Login successful! Token stored.';
+            displayError('Login successful! Token stored.', 'loginResponse');
         } else {
-            document.getElementById('loginResponse').innerText = 'Login failed!';
+            displayError(data.message || 'Login failed!', 'loginResponse');
         }
     }
-
-    // async function adminRegister() {
-    //     const email = document.getElementById('register_email').value;
-    //     const password = document.getElementById('register_password').value;
-        
-    //     showSpinner('spinnerRegister'); // Show spinner
-    //     const response = await fetch('/api/administrator/register', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'X-CSRF-TOKEN': csrfToken // Add CSRF token here
-    //         },
-    //         body: JSON.stringify({ email, password })
-    //     });
-    //     hideSpinner('spinnerRegister'); // Hide spinner        
-    //     const data = await response.json();        
-    //     data.message && document.getElementById('registerResponse').innerText = data.message;
-    // }
 
     async function createProfile() {
         const name = document.getElementById('name').value;
         const surname = document.getElementById('surname').value;
         const image = document.getElementById('image').files[0];
+
+        // Validate form fields
+        if (!name || !surname || !image) {
+            displayError('Please fill in all fields before creating a profile.', 'createProfileResponse');
+            return;
+        }
 
         const formData = new FormData();
         formData.append('nom', name);
@@ -171,12 +161,18 @@
         hideSpinner('spinnerCreate'); // Hide spinner
 
         const data = await response.json();
-        document.getElementById('createProfileResponse').innerText = JSON.stringify(data);
+        displayError(JSON.stringify(data), 'createProfileResponse');
     }
 
     async function viewProfiles() {
         showSpinner('spinnerView'); // Show spinner
         const response = await fetch('/api/profiles');
+        if (!response.ok) {
+            hideSpinner('spinnerView'); // Hide spinner
+            displayError('Failed to fetch profiles.', 'viewProfilesResponse');
+            return;
+        }
+
         const profiles = await response.json();
         hideSpinner('spinnerView'); // Hide spinner
         const profilesContainer = document.getElementById('profilesContainer');
@@ -194,6 +190,11 @@
         const surname = document.getElementById('updateSurname').value;
         const statut = document.getElementById('updateStatut').value; // Get statut value
 
+        // Validate form fields
+        if (!id || !name || !surname || !statut) {
+            displayError('Please fill in all fields before updating a profile.', 'updateProfileResponse');
+            return;
+        }
 
         showSpinner('spinnerUpdate'); // Show spinner
         const response = await fetch(`/api/profiles/${id}`, {
@@ -208,11 +209,17 @@
         hideSpinner('spinnerUpdate'); // Hide spinner
 
         const data = await response.json();
-        document.getElementById('updateProfileResponse').innerText = JSON.stringify(data);
+        displayError(JSON.stringify(data), 'updateProfileResponse');
     }
 
     async function deleteProfile() {
         const id = document.getElementById('deleteId').value;
+
+        // Validate form fields
+        if (!id) {
+            displayError('Please enter a profile ID to delete.', 'deleteProfileResponse');
+            return;
+        }
 
         showSpinner('spinnerDelete'); // Show spinner
         const response = await fetch(`/api/profiles/${id}`, {
@@ -222,10 +229,12 @@
                 'X-CSRF-TOKEN': csrfToken // Add CSRF token here
             }
         });
-        hideSpinner('spinnerDelete'); // Hide spinner        
-        document.getElementById('deleteProfileResponse').innerText = "Deleted profile with ID: " + id;
+        hideSpinner('spinnerDelete'); // Hide spinner
+
+        const data = await response.json();
+        displayError(data.message || 'Deleted profile with ID: ' + id, 'deleteProfileResponse');
     }
-</script>
+    </script>
 
 </body>
 </html>
