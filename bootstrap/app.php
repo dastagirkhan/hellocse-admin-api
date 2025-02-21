@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,8 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(EnsureFrontendRequestsAreStateful::class);
-        $middleware->append(\App\Http\Middleware\Authenticate::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        $exceptions->render(function (AuthenticationException $exception, $request) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        });
+    })
+    ->create();
