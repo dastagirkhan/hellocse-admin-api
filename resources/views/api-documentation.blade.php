@@ -161,7 +161,7 @@
         hideSpinner('spinnerCreate'); // Hide spinner
 
         const data = await response.json();
-        displayError(JSON.stringify(data), 'createProfileResponse');
+        displayError(JSON.stringify(data.message), 'createProfileResponse');
     }
 
     async function viewProfiles() {
@@ -176,7 +176,7 @@
         const profiles = await response.json();
         hideSpinner('spinnerView'); // Hide spinner
         const profilesContainer = document.getElementById('profilesContainer');
-        profilesContainer.innerHTML = profiles.map(profile => `
+        profilesContainer.innerHTML = profiles.data.map(profile => `
             <div class="border p-4 mb-2">
                 <img src="${profile.image}" alt="Profile Image" class="w-16 h-16 object-cover rounded-full">
                 <h3 class="font-semibold">${profile.prenom} ${profile.nom}</h3>
@@ -209,7 +209,7 @@
         hideSpinner('spinnerUpdate'); // Hide spinner
 
         const data = await response.json();
-        displayError(JSON.stringify(data), 'updateProfileResponse');
+        displayError(JSON.stringify(data.message), 'updateProfileResponse');
     }
 
     async function deleteProfile() {

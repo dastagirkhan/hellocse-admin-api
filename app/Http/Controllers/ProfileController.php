@@ -22,12 +22,16 @@ class ProfileController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        // Get pagination settings from config
+        $defaultPerPage = config('profile.pagination.default_per_page');
+        $maxPerPage = config('profile.pagination.max_per_page');
+
         // Get pagination parameters from the request or use defaults
-        $perPage = $request->input('per_page', 10); // Default to 10 items per page
-        $page = $request->input('page', 1); // Default to page 1
+        $perPage = $request->input('per_page', $defaultPerPage);
+        $page = $request->input('page', 1);
 
         // Validate pagination parameters
-        $perPage = max(1, min(100, $perPage)); // Ensure per_page is between 1 and 100
+        $perPage = max(1, min($maxPerPage, $perPage)); // Ensure per_page is between 1 and max_per_page
         $page = max(1, $page); // Ensure page is at least 1
 
         // Fetch paginated profiles
