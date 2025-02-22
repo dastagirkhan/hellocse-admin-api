@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Profile\StoreRequest;
 use App\Http\Requests\Profile\UpdateRequest;
+use App\Http\Resources\ProfileResource;
 
 class ProfileController extends Controller
 {
@@ -17,9 +18,8 @@ class ProfileController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Profile::active()->get(['id', 'nom', 'prenom', 'image']));
+        return response()->json(ProfileResource::collection(Profile::active()->get()));
     }
-
 
     /**
      * Store a new profile.
@@ -38,7 +38,7 @@ class ProfileController extends Controller
             'statut' => 'en attente',
         ]);
 
-        return response()->json($profile, 201);
+        return response()->json(new ProfileResource($profile), 201);
     }
 
     /**
@@ -65,7 +65,7 @@ class ProfileController extends Controller
 
         $profile->save();
 
-        return response()->json($profile);
+        return response()->json(new ProfileResource($profile));
     }
 
     /**

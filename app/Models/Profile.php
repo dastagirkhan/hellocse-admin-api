@@ -20,12 +20,6 @@ class Profile extends Model
         'statut' => 'string', // Change this based on your needs
     ];
 
-    // Accessor for image attribute
-    public function getImageAttribute($value)
-    {
-        return '/storage/' . $value;
-    }
-
     // Mutators for name attributes
     public function setNomAttribute($value)
     {

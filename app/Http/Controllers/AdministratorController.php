@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Administrator;
 use App\Http\Requests\Administrator\RegisterRequest;
 use App\Http\Requests\Administrator\LoginRequest;
+use App\Http\Resources\AdministratorResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 
@@ -12,9 +13,6 @@ class AdministratorController extends Controller
 {
     /**
      * Handles admin registration.
-     *
-     * @param RegisterRequest $request
-     * @return JsonResponse
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -22,16 +20,12 @@ class AdministratorController extends Controller
 
         return response()->json([
             'message' => 'Administrator registered successfully',
-            'data' => $admin,
+            'data' => new AdministratorResource($admin),
         ], 201);
     }
 
-
     /**
      * Handles admin login and token generation.
-     *
-     * @param LoginRequest $request
-     * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -42,6 +36,7 @@ class AdministratorController extends Controller
 
             return response()->json([
                 'message' => 'Login successful',
+                'data' => new AdministratorResource($admin),
                 'token' => $token,
             ], 200);
         }
