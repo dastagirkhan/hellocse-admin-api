@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Profile;
+
 
 class UpdateRequest extends FormRequest
 {
@@ -17,7 +19,7 @@ class UpdateRequest extends FormRequest
             'nom' => 'sometimes|required|string|max:255',
             'prenom' => 'sometimes|required|string|max:255',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'statut' => 'sometimes|string|in:inactif,en attente,actif',
+            'statut' => 'sometimes|string|in:' . implode(',', Profile::STATUSES),
         ];
     }
 }

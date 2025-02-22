@@ -20,6 +20,16 @@ class Profile extends Model
         'statut' => 'string', // Change this based on your needs
     ];
 
+    const STATUS_ACTIVE = 'actif';
+    const STATUS_INACTIVE = 'inactif';
+    const STATUS_PENDING = 'en attente';
+
+    const STATUSES = [
+        self::STATUS_ACTIVE,
+        self::STATUS_INACTIVE,
+        self::STATUS_PENDING,
+    ];
+
     // Mutators for name attributes
     public function setNomAttribute($value)
     {
