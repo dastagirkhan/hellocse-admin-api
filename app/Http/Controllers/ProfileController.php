@@ -39,7 +39,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'data' => ProfileResource::collection($profiles),
-            'message' => 'Active profiles retrieved successfully.',
+            'message' => __('profile.list_success'),
             'meta' => [
                 'total' => $profiles->total(),
                 'per_page' => $profiles->perPage(),
@@ -77,7 +77,7 @@ class ProfileController extends Controller
             // Return the response
             return response()->json([
                 'data' => new ProfileResource($profile),
-                'message' => 'Profile created successfully.',
+                'message' => __('profile.store_success'),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -86,12 +86,12 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($path);
             }
 
-            // Log the error
-            Log::error('Profile creation failed: ' . $e->getMessage());
+            // Log the error            
+            Log::alert('Profile creation failed: ' . $e->getMessage());
 
             // Return an error response
             return response()->json([
-                'message' => 'Failed to create profile.',
+                'message' => __('profile.store_failed'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -126,17 +126,18 @@ class ProfileController extends Controller
             // Return the updated profile
             return response()->json([
                 'data' => new ProfileResource($profile),
-                'message' => 'Profile updated successfully.',
+                'message' => __('profile.update_success'),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Log the error
-            Log::error('Profile update failed: ' . $e->getMessage());
+            // Log the error            ;
+            Log::error(__('profile.update_failed') . $e->getMessage());
+
 
             // Return an error response
             return response()->json([
-                'message' => 'Failed to update profile.',
+                'message' => __('profile.update_failed'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -162,15 +163,15 @@ class ProfileController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Profile deleted successfully.',
+                'message' => __('profile.delete_success'),
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Profile deletion failed: ' . $e->getMessage());
+            Log::error(__('profile.delete_failed') . $e->getMessage());
 
             return response()->json([
-                'message' => 'Failed to delete profile.',
+                'message' => __('profile.delete_failed'),
                 'error' => $e->getMessage(),
             ], 500);
         }

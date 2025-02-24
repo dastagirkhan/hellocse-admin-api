@@ -27,16 +27,16 @@ class AdministratorController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Administrator registered successfully',
+                'message' => __('admin.register_success'),
                 'data' => new AdministratorResource($admin),
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Administrator registration failed: ' . $e->getMessage());
+            Log::error(__('admin.register_failed') . $e->getMessage());
 
             return response()->json([
-                'message' => 'Failed to register administrator.',
+                'message' => __('admin.register_failed'),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -60,7 +60,7 @@ class AdministratorController extends Controller
             $seconds = RateLimiter::availableIn($key);
 
             return response()->json([
-                'message' => 'Too many login attempts. Please try again in ' . $seconds . ' seconds.',
+                'message' => __('admin.too_many_attempts', ['seconds' => $seconds]),
             ], 429); // 429 = Too Many Requests
         }
 
@@ -75,7 +75,8 @@ class AdministratorController extends Controller
             $token = $admin->createToken('API Token')->plainTextToken;
 
             return response()->json([
-                'message' => 'Login successful',
+                'message' => __('admin.login_success'),
+                'lang' => app()->getLocale(),
                 'data' => new AdministratorResource($admin),
                 'token' => $token,
             ], 200);
@@ -84,11 +85,11 @@ class AdministratorController extends Controller
         // Increment the rate limiter on failed attempts
         RateLimiter::hit($key, $decayMinutes * 60); // Convert minutes to seconds
 
-        // Log the failed login attempt
-        Log::warning('Failed login attempt for email: ' . $request->email);
+        // Log the failed login attempt        
+        Log::warning(__('admin.failed_login_attempt') . $request->email);
 
         return response()->json([
-            'message' => 'Invalid credentials',
+            'message' => __('admin.invalid_credentials'),
         ], 401);
     }
 }

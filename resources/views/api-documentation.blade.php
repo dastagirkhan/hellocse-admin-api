@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
     let token = '';
     
     // Get CSRF token from meta tag
@@ -99,8 +99,28 @@
         document.getElementById(spinnerId).style.display = 'none';
     }
     
-    function displayError(message, responseId) {
-        document.getElementById(responseId).innerText = message;
+    function displayMessage(response, elementId, fallbackMessage = '') {
+        const messageElement = document.getElementById(elementId);
+
+        // Default to red color for errors/failures
+        let colorClass = 'text-red-600'; // Red for errors/failures
+        let message = fallbackMessage; // Fallback message if no message is provided
+
+        // Check if the response contains a message
+        if (response && response.message) {
+            message = response.message;
+        }
+
+        // Determine the message type and set the color accordingly
+        if (response && response.status === 'success') {
+            colorClass = 'text-green-600'; // Green for success
+        } else if (response && response.status === 'warning') {
+            colorClass = 'text-yellow-600'; // Yellow for warnings
+        }
+
+        // Update the message element
+        messageElement.innerText = message;
+        messageElement.className = `text-sm ${colorClass} mt-2`; // Apply the color class
     }
 
     async function adminLogin() {
@@ -109,7 +129,10 @@
 
         // Validate form fields
         if (!email || !password) {
-            displayError('Please fill in both email and password fields.', 'loginResponse');
+            displayMessage(
+                { status: 'error', message: 'Please fill in both email and password fields.' },
+                'loginResponse'
+            );
             return;
         }
 
@@ -127,9 +150,15 @@
         const data = await response.json();
         if (data.token) {
             token = data.token;
-            displayError('Login successful! Token stored.', 'loginResponse');
+            displayMessage(
+                { status: 'success', message: data.message || 'Login successful! Token stored.' },
+                'loginResponse'
+            );
         } else {
-            displayError(data.message || 'Login failed!', 'loginResponse');
+            displayMessage(
+                { status: 'error', message: data.message || 'Login failed!' },
+                'loginResponse'
+            );
         }
     }
 
@@ -140,7 +169,10 @@
 
         // Validate form fields
         if (!name || !surname || !image) {
-            displayError('Please fill in all fields before creating a profile.', 'createProfileResponse');
+            displayMessage(
+                { status: 'error', message: 'Please fill in all fields before creating a profile.' },
+                'createProfileResponse'
+            );
             return;
         }
 
@@ -161,7 +193,11 @@
         hideSpinner('spinnerCreate'); // Hide spinner
 
         const data = await response.json();
-        displayError(JSON.stringify(data.message), 'createProfileResponse');
+        displayMessage(
+            { status: response.ok ? 'success' : 'error', message: data.message },
+            'createProfileResponse',
+            response.ok ? 'Profile created successfully.' : 'Failed to create profile.'
+        );
     }
 
     async function viewProfiles() {
@@ -169,7 +205,10 @@
         const response = await fetch('/api/profiles');
         if (!response.ok) {
             hideSpinner('spinnerView'); // Hide spinner
-            displayError('Failed to fetch profiles.', 'viewProfilesResponse');
+            displayMessage(
+                { status: 'error', message: 'Failed to fetch profiles.' },
+                'viewProfilesResponse'
+            );
             return;
         }
 
@@ -192,7 +231,10 @@
 
         // Validate form fields
         if (!id || !name || !surname || !statut) {
-            displayError('Please fill in all fields before updating a profile.', 'updateProfileResponse');
+            displayMessage(
+                { status: 'error', message: 'Please fill in all fields before updating a profile.' },
+                'updateProfileResponse'
+            );
             return;
         }
 
@@ -209,7 +251,11 @@
         hideSpinner('spinnerUpdate'); // Hide spinner
 
         const data = await response.json();
-        displayError(JSON.stringify(data.message), 'updateProfileResponse');
+        displayMessage(
+            { status: response.ok ? 'success' : 'error', message: data.message },
+            'updateProfileResponse',
+            response.ok ? 'Profile updated successfully.' : 'Failed to update profile.'
+        );
     }
 
     async function deleteProfile() {
@@ -217,7 +263,10 @@
 
         // Validate form fields
         if (!id) {
-            displayError('Please enter a profile ID to delete.', 'deleteProfileResponse');
+            displayMessage(
+                { status: 'error', message: 'Please enter a profile ID to delete.' },
+                'deleteProfileResponse'
+            );
             return;
         }
 
@@ -232,9 +281,12 @@
         hideSpinner('spinnerDelete'); // Hide spinner
 
         const data = await response.json();
-        displayError(data.message || 'Deleted profile with ID: ' + id, 'deleteProfileResponse');
+        displayMessage(
+            { status: response.ok ? 'success' : 'error', message: data.message },
+            'deleteProfileResponse',
+            response.ok ? 'Profile deleted successfully.' : 'Failed to delete profile.'
+        );
     }
-    </script>
-
+</script>
 </body>
 </html>
