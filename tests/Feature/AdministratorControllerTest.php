@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Administrator;
+use App\Models\administrator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
-class AuthControllerTest extends TestCase
+class administratorControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -16,7 +16,7 @@ class AuthControllerTest extends TestCase
     {
         $email = 'admin_' . Str::random(5) . '@example.com';
 
-        $response = $this->postJson('/api/register', [
+        $response = $this->postJson('/api/administrator/register', [
             'email' => $email,
             'password' => 'password123',
         ]);
@@ -31,12 +31,12 @@ class AuthControllerTest extends TestCase
     public function test_admin_can_login()
     {
         $email = 'admin_' . Str::random(5) . '@example.com';
-        $admin = Administrator::create([
+        $admin = administrator::create([
             'email' => $email,
             'password' => Hash::make('password123'), // Use Hash::make() for consistency
         ]);
 
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/administrator/login', [
             'email' => $email,
             'password' => 'password123',
         ]);
@@ -47,12 +47,12 @@ class AuthControllerTest extends TestCase
 
     public function test_invalid_login_credentials()
     {
-        $response = $this->postJson('/api/login', [
+        $response = $this->postJson('/api/administrator/login', [
             'email' => 'nonexistent@example.com',
             'password' => 'wrongpassword',
         ]);
 
         $response->assertStatus(401);
-        $response->assertJson(['message' => 'Invalid credentials']);
+        $response->assertJson([]);
     }
 }

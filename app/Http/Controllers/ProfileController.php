@@ -162,9 +162,7 @@ class ProfileController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'message' => __('profile.delete_success'),
-            ], 200);
+            return response()->json(null, 204); // Return 204 No Content
         } catch (\Exception $e) {
             DB::rollBack();
 
